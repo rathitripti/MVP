@@ -2,11 +2,16 @@ install.packages("sp")
 install.packages("maps")
 install.packages("maptools")
 install.packages("rgdal")
+install.packages("dplyr")
+install.packages("ggplot2")
 library("sp")
 library("maps")
 library("maptools")
 library("rgdal")
-
+library("dplyr")
+library("ggplot2")
+getwd()
+setwd("/Users/triptirathi/Documents/Stat-Experiment-")
 ##Plot Tweets on a Map of the US
 flu_32 <- read.csv("flu_32.csv", header = TRUE)
 par(mar = c(0, 0, 0, 0))
@@ -36,14 +41,30 @@ latlong2state <- function(pointsDF) {
   # Return the state names of the Polygons object containing each point
   as.vector(indices$NAME)
 }
-class(flu_32$lng)
 
+#Function to automate the following process
+lat_lng2df <- function(df) {
+  df_geo <- df[which((df$lng != "NA" & df$lat != "NA")),]
+  df_geo_lat <- df_geo$lat
+  df_geo_lng <- df_geo$lng
+  testPoints2.0 <- cbind(df_geo_lng,df_geo_lat)
+  testPoints3.0 <- data.frame(testPoints2.0)
+  df_geo["state"] <- latlong2state(testPoints3.0)
+  return(data.frame(df_geo))
+}
+
+flu_32_geo <- lat_lng2df(flu_32)
+fwrite(flu_32_geo, file = "flu_32_geo.csv")
+flu_32_geo <- read.csv("flu_32_geo.csv", header = TRUE)
+
+#Or the Manual way
 flu_32_geo <- flu_32[which((flu_32$lng != "NA" & flu_32$lat != "NA")),]
 flu_32_lat <- flu_32_geo$lat
 flu_32_lng <- flu_32_geo$lng
 testPoints2.0 <- cbind(flu_32_lng,flu_32_lat)
 testPoints2.0 <- data.frame(testPoints2.0)
 flu_32_geo["state"] <- latlong2state(testPoints2.0)
+flu_32_geo$state
 
 ##CDC Flu Data 
 ili <- read.csv("ILINetUPDATED.csv", header = TRUE)

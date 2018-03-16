@@ -12,7 +12,6 @@ library("rtweet")
 library("tidytext")
 library("purrr")
 library("data.table")
-
 ##Mining Tweets 
 app_name <- "flutracking1"
 key <- "nQ8HlR0WO0iWsX5O7OCcifUzB"
